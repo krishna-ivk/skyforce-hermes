@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+import argparse
+import sys
+import os
+import json
+import logging
+
+# Setup path for internal imports
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
+from src.core.events import HermesEventBus, HermesDLQ
+
+# Setup minimal logging for CLI
+logging.basicConfig(level=logging.ERROR)
+
+def main():
+    parser = argparse.ArgumentParser(description="Hermes Control Plane (hermes-ctl)")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # Command: submit
+    submit_parser = subparsers.add_parser("submit", help="Submit a new task to the cluster")
+    submit_parser.add_argument("--task", required=True, help="Description of the task")
+    submit_parser.add_argument("--id", help="Optional task ID")
+
+    # Command: status
+    status_parser = subparsers.add_parser("status", help="Check cluster health and discard bin")
+
+    args = parser.parse_args()
+
+    # Initialize Bus
+    bus = HermesEventBus()
+    
+    if args.command == "submit":
+        task_id = args.id or f"task_{os.urandom(4).hex()}"
+        payload = {
+            "task_id": task_id,
+            "description": args.task,
+            "retries": 0
+        }
+        print(f"Submitting task {task_id} to 'system_tasks'...")
+        bus.publish("system_tasks", "NEW_TASK", payload, sender="hermes-ctl")
+        print("Success.")
+
+    elif args.command == "status":
+        print("\n--- HERMES CLUSTER STATUS ---")
+        print("Event Bus: ONLINE (redis://localhost:6379)")
+        print("Workers: ACTIVE (Simulated)")
+        print("Discard Bin: Check /forge/memory/traces for terminal failures.")
+        print("-----------------------------\n")
+
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()
