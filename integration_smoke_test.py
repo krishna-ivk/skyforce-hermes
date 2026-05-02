@@ -32,7 +32,7 @@ def run_integration_test():
     success_task = {
         "task_id": "hermes_task_001",
         "type": "code_repair",
-        "description": "Clean repair of utils/parser.py",
+        "description": "Ensure temp/parser.py exists and has repaired parser",
         "retries": 0,
     }
     worker.run_task(success_task)

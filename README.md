@@ -17,6 +17,8 @@ Skyforce currently uses Hermes in a split-node posture:
 
 Hermes should be treated as the comms/runtime edge, not the primary code-build surface.
 
+It should also be treated as an integration path, not as the center of gravity for the product.
+
 ## Setup
 
 To get started with Hermes in this workspace:

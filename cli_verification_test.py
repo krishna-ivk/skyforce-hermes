@@ -27,11 +27,13 @@ def verify_cli_flow():
 
     # 2. Simulate CLI Submit Logic
     # (Normally this happens in a separate process, but here we trigger the worker's subscription)
-    print("[CLI] Running: hermes-ctl submit --task 'Repair Documentation'")
+    print(
+        "[CLI] Running: hermes-ctl submit --task 'Ensure temp/repair-documentation.md exists and has Repair Documentation'"
+    )
 
     task_payload = {
         "task_id": "cli_task_001",
-        "description": "Repair Documentation",
+        "description": "Ensure temp/repair-documentation.md exists and has Repair Documentation",
         "retries": 0,
     }
 
